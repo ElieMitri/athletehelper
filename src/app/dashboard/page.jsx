@@ -191,8 +191,8 @@ export default function DashboardPage() {
             <div className="grid grid-cols-2 md:grid-cols-6 gap-4">
               {[
                 // { name: "Football", icon: "🏈", href: "/sports/football" },
-                { name: "Soccer", icon: "⚽", href: "/sports/soccer" },
-                { name: "Basketball", icon: "🏀", href: "/sports/basketball" },
+                { name: "Soccer", icon: "⚽" },
+                { name: "Basketball", icon: "🏀" },
                 // { name: "Baseball", icon: "⚾", href: "/sports/baseball" },
                 // { name: "Tennis", icon: "🎾", href: "/sports/tennis" },
                 // { name: "Running", icon: "🏃", href: "/sports/running" },
