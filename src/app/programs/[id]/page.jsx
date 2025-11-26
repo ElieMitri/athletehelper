@@ -7,11 +7,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { getProgramById } from "@/data/programs-data";
 
-export default function ProgramDetailPage({
-  params,
-}: {
-  params: { id: string };
-}) {
+export default function ProgramDetailPage({ params }) {
   const [activeWeek, setActiveWeek] = useState(1);
   const [isSaved, setIsSaved] = useState(false);
   const [showAllWeeks, setShowAllWeeks] = useState(false);
