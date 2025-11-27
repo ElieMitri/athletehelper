@@ -130,7 +130,7 @@ export default function ProgramDetailPage({ params }) {
             </div>
 
             {/* Action Buttons */}
-            <div className="flex gap-4 flex-wrap">
+            {/* <div className="flex gap-4 flex-wrap">
               <Button className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 shadow-lg shadow-blue-600/30 hover:scale-105 transition-all text-lg px-8 py-4">
                 🚀 Start Program Now
               </Button>
@@ -149,7 +149,7 @@ export default function ProgramDetailPage({ params }) {
               <button className="px-6 py-4 rounded-xl font-semibold bg-slate-800 text-slate-300 border border-slate-700 hover:bg-slate-700 transition-all hover:scale-105">
                 📤 Share
               </button>
-            </div>
+            </div> */}
           </div>
         </div>
 
