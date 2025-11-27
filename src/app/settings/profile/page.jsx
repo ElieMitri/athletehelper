@@ -178,17 +178,17 @@ export default function ProfileSettingsPage() {
                 )}
               </div>
             </div>
-            <Button variant="secondary">
+            {/* <Button variant="secondary">
               <span className="flex items-center gap-2">
                 <span>📷</span>
                 <span>Change Photo</span>
               </span>
-            </Button>
+            </Button> */}
           </div>
         </Card>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+        {/* <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           {stats.map((stat, index) => (
             <Card
               key={index}
@@ -203,7 +203,7 @@ export default function ProfileSettingsPage() {
               <p className="text-xs text-slate-400">{stat.label}</p>
             </Card>
           ))}
-        </div>
+        </div> */}
 
         {/* Tab Navigation */}
         <div className="flex gap-2 mb-6 overflow-x-auto pb-2 bg-slate-800/50 p-2 rounded-xl border border-slate-700">

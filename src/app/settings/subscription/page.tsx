@@ -4,24 +4,77 @@ import LayoutWrapper from "@/components/layout/LayoutWrapper";
 import Card from "@/components/shared/Card";
 import Button from "@/components/shared/Button";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useAuth } from "@/context/AuthContext";
 
 export default function SubscriptionSettingsPage() {
+  const { user } = useAuth();
   const [billingCycle, setBillingCycle] = useState<"monthly" | "yearly">(
     "monthly"
   );
+  const [isLoading, setIsLoading] = useState(true);
 
-  const currentPlan = {
-    name: "Free",
-    price: "$0",
-    nextBilling: "February 15, 2024",
-    features: [
-      "3 programs maximum",
-      "Basic exercise library",
-      "Standard support",
-      "Community access",
-    ],
+  // Get user's current subscription tier from Clerk metadata
+  const userTier = (user?.subscription as string) || "free";
+  const isPaidUser = userTier !== "free";
+  console.log(isPaidUser);
+
+  useEffect(() => {
+    // Simulate loading user data
+    if (user) {
+      setIsLoading(false);
+    }
+  }, [user]);
+
+  // Dynamic current plan based on user's actual subscription
+  const getCurrentPlan = () => {
+    switch (userTier.toLowerCase()) {
+      case "pro":
+        return {
+          name: "Pro",
+          price: billingCycle === "monthly" ? "$29" : "$290",
+          nextBilling: "February 15, 2025",
+          features: [
+            "Unlimited programs",
+            "Full exercise library",
+            "Advanced analytics",
+            "Priority support",
+            "Custom workouts",
+            "Injury prevention",
+          ],
+        };
+      case "team":
+        return {
+          name: "Team",
+          price: billingCycle === "monthly" ? "$99" : "$990",
+          nextBilling: "February 15, 2025",
+          features: [
+            "Everything in Pro",
+            "Up to 50 athletes",
+            "Team management",
+            "Advanced analytics",
+            "API access",
+            "Dedicated support",
+            "Custom integrations",
+            "White-label option",
+          ],
+        };
+      default:
+        return {
+          name: "Free",
+          price: "$0",
+          nextBilling: null,
+          features: [
+            "3 programs maximum",
+            "Basic exercise library",
+            "Standard support",
+            "Community access",
+          ],
+        };
+    }
   };
+
+  const currentPlan = getCurrentPlan();
 
   const plans = [
     {
@@ -30,14 +83,15 @@ export default function SubscriptionSettingsPage() {
       monthlyPrice: "$0",
       yearlyPrice: "$0",
       features: [
-        "3 active programs",
+        "4 active programs",
         "Basic exercise library",
-        "Community access",
+        "3 rehab programs",
         "Standard support",
       ],
       popular: false,
-      current: true,
+      current: userTier === "free",
       color: "from-slate-600 to-slate-700",
+      tier: "free",
     },
     {
       name: "Pro",
@@ -50,33 +104,33 @@ export default function SubscriptionSettingsPage() {
         "Advanced analytics",
         "Priority support",
         "Custom workouts",
-        "Progress tracking",
         "Injury prevention",
-        "Nutrition guidance",
       ],
       popular: true,
-      current: false,
+      current: userTier === "pro",
       color: "from-blue-600 to-purple-600",
+      tier: "pro",
     },
-    {
-      name: "Team",
-      icon: "👥",
-      monthlyPrice: "$99",
-      yearlyPrice: "$990",
-      features: [
-        "Everything in Pro",
-        "Up to 50 athletes",
-        "Team management",
-        "Advanced analytics",
-        "API access",
-        "Dedicated support",
-        "Custom integrations",
-        "White-label option",
-      ],
-      popular: false,
-      current: false,
-      color: "from-orange-600 to-red-600",
-    },
+    // {
+    //   name: "Team",
+    //   icon: "👥",
+    //   monthlyPrice: "$99",
+    //   yearlyPrice: "$990",
+    //   features: [
+    //     "Everything in Pro",
+    //     "Up to 50 athletes",
+    //     "Team management",
+    //     "Advanced analytics",
+    //     "API access",
+    //     "Dedicated support",
+    //     "Custom integrations",
+    //     "White-label option",
+    //   ],
+    //   popular: false,
+    //   current: userTier === "team",
+    //   color: "from-orange-600 to-red-600",
+    //   tier: "team",
+    // },
   ];
 
   const benefits = [
@@ -85,33 +139,39 @@ export default function SubscriptionSettingsPage() {
       title: "Unlimited Programs",
       description:
         "Access to all training programs and create unlimited custom plans",
+      proOnly: true,
     },
     {
       icon: "📊",
       title: "Advanced Analytics",
       description:
         "Track your progress with detailed insights and performance metrics",
+      proOnly: true,
     },
     {
       icon: "🎯",
       title: "Personal Coaching",
       description: "1-on-1 coaching sessions with certified trainers",
+      proOnly: true,
     },
     {
       icon: "🏥",
       title: "Injury Prevention",
       description:
         "Comprehensive rehab programs and injury prevention protocols",
+      proOnly: true,
     },
     {
       icon: "🍎",
       title: "Nutrition Plans",
       description: "Personalized meal plans and nutrition tracking",
+      proOnly: true,
     },
     {
       icon: "🔔",
       title: "Smart Reminders",
       description: "Intelligent workout reminders and progress notifications",
+      proOnly: true,
     },
   ];
 
@@ -129,6 +189,11 @@ export default function SubscriptionSettingsPage() {
       question: "Can I switch plans?",
       answer:
         "Absolutely! You can upgrade or downgrade your plan at any time. Changes take effect immediately.",
+    },
+    {
+      question: "What happens if I downgrade?",
+      answer:
+        "If you downgrade from a paid plan, you'll retain access to premium features until the end of your current billing period. After that, your account will transition to the lower tier.",
     },
   ];
 
@@ -163,6 +228,51 @@ export default function SubscriptionSettingsPage() {
     return savings;
   };
 
+  const handlePlanAction = (planTier: string) => {
+    // TODO: Implement actual subscription management
+    // For now, just show an alert
+    if (planTier === userTier) {
+      alert("This is your current plan");
+      return;
+    }
+
+    if (planTier === "free") {
+      const confirmed = confirm(
+        "Are you sure you want to downgrade to the Free plan? You'll lose access to premium features at the end of your billing period."
+      );
+      if (confirmed) {
+        // TODO: Call API to downgrade
+        console.log("Downgrading to free plan...");
+      }
+    } else if (planTier === "team" && !isPaidUser) {
+      alert("Team plan coming soon! Please upgrade to Pro for now.");
+    } else {
+      // Upgrading or changing paid plans
+      console.log(`Upgrading/changing to ${planTier} plan...`);
+      // TODO: Redirect to Stripe checkout or payment portal
+    }
+  };
+
+  const handleManageBilling = () => {
+    // TODO: Redirect to Stripe customer portal
+    console.log("Opening billing portal...");
+    alert("Redirecting to billing management...");
+  };
+
+  if (isLoading) {
+    return (
+      <LayoutWrapper>
+        <div className="max-w-7xl mx-auto px-4 py-8">
+          <div className="animate-pulse">
+            <div className="h-12 bg-slate-700 rounded w-1/3 mb-4"></div>
+            <div className="h-6 bg-slate-700 rounded w-1/2 mb-8"></div>
+            <div className="h-64 bg-slate-700 rounded mb-8"></div>
+          </div>
+        </div>
+      </LayoutWrapper>
+    );
+  }
+
   return (
     <LayoutWrapper>
       <div className="max-w-7xl mx-auto px-4 py-8">
@@ -180,33 +290,57 @@ export default function SubscriptionSettingsPage() {
             Subscription & Billing
           </h1>
           <p className="text-slate-400 text-lg">
-            Choose the perfect plan for your training goals
+            {isPaidUser
+              ? "Manage your subscription and billing details"
+              : "Choose the perfect plan for your training goals"}
           </p>
         </div>
 
         {/* Current Plan Card */}
         <Card className="p-8 mb-8 bg-gradient-to-br from-slate-800 via-slate-900 to-slate-800 border-slate-700 relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-blue-600/10 to-purple-600/10 blur-3xl rounded-full"></div>
+          <div
+            className={`absolute top-0 right-0 w-96 h-96 ${
+              isPaidUser
+                ? "bg-gradient-to-br from-blue-600/10 to-purple-600/10"
+                : "bg-gradient-to-br from-slate-600/10 to-slate-700/10"
+            } blur-3xl rounded-full`}
+          ></div>
 
           <div className="relative">
             <div className="flex items-start justify-between flex-wrap gap-6">
-              <div>
+              <div className="flex-1">
                 <div className="flex items-center gap-3 mb-3">
                   <h3 className="text-3xl font-bold text-white">
                     {currentPlan.name} Plan
                   </h3>
-                  <span className="px-4 py-1.5 bg-gradient-to-r from-emerald-600 to-emerald-700 text-white rounded-full font-semibold text-sm shadow-lg">
+                  <span
+                    className={`px-4 py-1.5 ${
+                      isPaidUser
+                        ? "bg-gradient-to-r from-blue-600 to-purple-600"
+                        : "bg-gradient-to-r from-emerald-600 to-emerald-700"
+                    } text-white rounded-full font-semibold text-sm shadow-lg`}
+                  >
                     ✓ Active
                   </span>
                 </div>
                 <p className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent mb-6">
                   {currentPlan.price}
-                  <span className="text-lg text-slate-400"> / forever</span>
+                  <span className="text-lg text-slate-400">
+                    {isPaidUser
+                      ? ` / ${billingCycle === "monthly" ? "month" : "year"}`
+                      : " / forever"}
+                  </span>
                 </p>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   {currentPlan.features.map((feature, index) => (
                     <div key={index} className="flex items-center gap-3">
-                      <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-emerald-600 to-emerald-700 flex items-center justify-center flex-shrink-0 shadow-lg">
+                      <div
+                        className={`w-6 h-6 rounded-lg ${
+                          isPaidUser
+                            ? "bg-gradient-to-br from-blue-600 to-purple-600"
+                            : "bg-gradient-to-br from-emerald-600 to-emerald-700"
+                        } flex items-center justify-center flex-shrink-0 shadow-lg`}
+                      >
                         <span className="text-white text-xs font-bold">✓</span>
                       </div>
                       <span className="text-slate-200">{feature}</span>
@@ -214,7 +348,7 @@ export default function SubscriptionSettingsPage() {
                   ))}
                 </div>
               </div>
-              {currentPlan.name !== "Free" && (
+              {isPaidUser && currentPlan.nextBilling && (
                 <div className="text-right bg-slate-800/50 rounded-xl p-5 border border-slate-700">
                   <p className="text-sm text-slate-400 mb-2">
                     Next billing date
@@ -222,70 +356,111 @@ export default function SubscriptionSettingsPage() {
                   <p className="text-xl font-bold text-white">
                     {currentPlan.nextBilling}
                   </p>
-                  <button className="mt-4 text-sm text-blue-400 hover:text-blue-300 transition-colors">
-                    Update Payment Method →
+                  <button
+                    onClick={handleManageBilling}
+                    className="mt-4 text-sm text-blue-400 hover:text-blue-300 transition-colors"
+                  >
+                    Manage Billing →
                   </button>
                 </div>
               )}
             </div>
+
+            {/* Paid User Actions */}
+            {isPaidUser && (
+              <div className="mt-6 pt-6 border-t border-slate-700">
+                <div className="flex flex-wrap gap-3">
+                  <button
+                    onClick={handleManageBilling}
+                    className="px-5 py-2.5 bg-slate-700 hover:bg-slate-600 text-white rounded-lg font-medium transition-colors"
+                  >
+                    Update Payment Method
+                  </button>
+                  <button
+                    onClick={() => {
+                      const confirmed = confirm(
+                        "Are you sure you want to cancel your subscription? You'll lose access to premium features at the end of your billing period."
+                      );
+                      if (confirmed) {
+                        console.log("Cancelling subscription...");
+                        // TODO: Implement cancellation
+                      }
+                    }}
+                    className="px-5 py-2.5 bg-red-600/20 hover:bg-red-600/30 text-red-400 rounded-lg font-medium transition-colors border border-red-600/30"
+                  >
+                    Cancel Subscription
+                  </button>
+                  <button
+                    onClick={handleManageBilling}
+                    className="px-5 py-2.5 bg-slate-700 hover:bg-slate-600 text-white rounded-lg font-medium transition-colors"
+                  >
+                    View Billing History
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </Card>
 
-        {/* Billing Cycle Toggle */}
-        <div className="flex items-center justify-center gap-4 mb-8">
-          <span
-            className={`text-lg font-medium transition-colors ${
-              billingCycle === "monthly" ? "text-white" : "text-slate-500"
-            }`}
-          >
-            Monthly
-          </span>
-          <button
-            onClick={() =>
-              setBillingCycle(billingCycle === "monthly" ? "yearly" : "monthly")
-            }
-            className={`relative inline-flex h-8 w-16 items-center rounded-full transition-colors ${
-              billingCycle === "yearly"
-                ? "bg-gradient-to-r from-blue-600 to-purple-600"
-                : "bg-slate-700"
-            }`}
-          >
+        {/* Billing Cycle Toggle - Only show for upgrade options */}
+        {!isPaidUser && (
+          <div className="flex items-center justify-center gap-4 mb-8">
             <span
-              className={`inline-block h-6 w-6 transform rounded-full bg-white transition-transform shadow-lg ${
-                billingCycle === "yearly" ? "translate-x-9" : "translate-x-1"
+              className={`text-lg font-medium transition-colors ${
+                billingCycle === "monthly" ? "text-white" : "text-slate-500"
               }`}
-            />
-          </button>
-          <span
-            className={`text-lg font-medium transition-colors ${
-              billingCycle === "yearly" ? "text-white" : "text-slate-500"
-            }`}
-          >
-            Yearly
-          </span>
-          <span className="px-3 py-1 bg-emerald-600/20 text-emerald-300 rounded-full text-sm font-semibold">
-            Save up to 17%
-          </span>
-        </div>
+            >
+              Monthly
+            </span>
+            <button
+              onClick={() =>
+                setBillingCycle(
+                  billingCycle === "monthly" ? "yearly" : "monthly"
+                )
+              }
+              className={`relative inline-flex h-8 w-16 items-center rounded-full transition-colors ${
+                billingCycle === "yearly"
+                  ? "bg-gradient-to-r from-blue-600 to-purple-600"
+                  : "bg-slate-700"
+              }`}
+            >
+              <span
+                className={`inline-block h-6 w-6 transform rounded-full bg-white transition-transform shadow-lg ${
+                  billingCycle === "yearly" ? "translate-x-9" : "translate-x-1"
+                }`}
+              />
+            </button>
+            <span
+              className={`text-lg font-medium transition-colors ${
+                billingCycle === "yearly" ? "text-white" : "text-slate-500"
+              }`}
+            >
+              Yearly
+            </span>
+            <span className="px-3 py-1 bg-emerald-600/20 text-emerald-300 rounded-full text-sm font-semibold">
+              Save up to 17%
+            </span>
+          </div>
+        )}
 
         {/* Plans Grid */}
         <div className="mb-12">
           <h2 className="text-3xl font-bold mb-6 text-white text-center">
-            Choose Your Plan
+            {isPaidUser ? "Change Your Plan" : "Choose Your Plan"}
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {plans.map((plan) => (
               <Card
                 key={plan.name}
                 className={`p-6 transition-all relative overflow-hidden ${
                   plan.current
                     ? "border-2 border-blue-500 shadow-xl shadow-blue-500/20 scale-105"
-                    : plan.popular
+                    : plan.popular && !isPaidUser
                     ? "border-2 border-purple-500 shadow-xl shadow-purple-500/20"
                     : "border-slate-700 hover:border-slate-600 hover:scale-105"
                 } bg-gradient-to-br from-slate-800 to-slate-900`}
               >
-                {plan.popular && (
+                {plan.popular && !isPaidUser && (
                   <div className="absolute top-0 right-0 bg-gradient-to-r from-purple-600 to-pink-600 text-white px-4 py-1 text-xs font-bold rounded-bl-lg">
                     MOST POPULAR
                   </div>
@@ -347,11 +522,16 @@ export default function SubscriptionSettingsPage() {
                   </div>
                 ) : (
                   <Button
+                    onClick={() => handlePlanAction(plan.tier)}
                     className={`w-full bg-gradient-to-r ${plan.color} hover:opacity-90 text-white font-semibold shadow-lg hover:scale-105 transition-all`}
                   >
-                    {plan.name === "Free"
-                      ? "Downgrade"
-                      : `Upgrade to ${plan.name}`}
+                    {plan.tier === "free"
+                      ? "Downgrade to Free"
+                      : plan.tier === "team"
+                      ? "Coming Soon"
+                      : userTier === "free"
+                      ? `Upgrade to ${plan.name}`
+                      : `Your Current Plan`}
                   </Button>
                 )}
               </Card>
@@ -359,26 +539,30 @@ export default function SubscriptionSettingsPage() {
           </div>
         </div>
 
-        {/* Benefits Section */}
-        <Card className="p-8 mb-8 bg-gradient-to-br from-slate-800 to-slate-900 border-slate-700">
-          <h2 className="text-3xl font-bold mb-6 text-white text-center">
-            Why Choose Pro or Team?
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {benefits.map((benefit, index) => (
-              <div
-                key={index}
-                className="p-5 bg-slate-900/50 rounded-xl border border-slate-700 hover:border-slate-600 transition-all"
-              >
-                <div className="text-4xl mb-3">{benefit.icon}</div>
-                <h3 className="font-bold text-white text-lg mb-2">
-                  {benefit.title}
-                </h3>
-                <p className="text-sm text-slate-400">{benefit.description}</p>
-              </div>
-            ))}
-          </div>
-        </Card>
+        {/* Benefits Section - Show different content for paid vs free users */}
+        {!isPaidUser && (
+          <Card className="p-8 mb-8 bg-gradient-to-br from-slate-800 to-slate-900 border-slate-700">
+            <h2 className="text-3xl font-bold mb-6 text-white text-center">
+              Why Upgrade to Pro?
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {benefits.map((benefit, index) => (
+                <div
+                  key={index}
+                  className="p-5 bg-slate-900/50 rounded-xl border border-slate-700 hover:border-slate-600 transition-all"
+                >
+                  <div className="text-4xl mb-3">{benefit.icon}</div>
+                  <h3 className="font-bold text-white text-lg mb-2">
+                    {benefit.title}
+                  </h3>
+                  <p className="text-sm text-slate-400">
+                    {benefit.description}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </Card>
+        )}
 
         {/* Testimonials */}
         <div className="mb-8">
@@ -430,47 +614,77 @@ export default function SubscriptionSettingsPage() {
           </div>
         </Card>
 
-        {/* Money-Back Guarantee */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <Card className="p-6 bg-gradient-to-br from-emerald-600/10 to-slate-800 border-emerald-600/30">
-            <h3 className="text-xl font-bold mb-4 text-white flex items-center gap-2">
-              <span>✓</span>
-              <span>Money-Back Guarantee</span>
-            </h3>
-            <p className="text-slate-300 mb-4">
-              Try any plan risk-free for 7 days. If you're not completely
-              satisfied, we'll refund your money—no questions asked.
-            </p>
-            <div className="flex items-center gap-3 p-4 bg-emerald-600/20 border border-emerald-600/30 rounded-lg">
-              <span className="text-3xl">✓</span>
-              <div>
-                <p className="font-semibold text-emerald-300">
-                  7-Day Money Back
+        {/* Money-Back Guarantee & Security - Only show for free users */}
+        {!isPaidUser && (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <Card className="p-6 bg-gradient-to-br from-emerald-600/10 to-slate-800 border-emerald-600/30">
+              <h3 className="text-xl font-bold mb-4 text-white flex items-center gap-2">
+                <span>✓</span>
+                <span>Money-Back Guarantee</span>
+              </h3>
+              <p className="text-slate-300 mb-4">
+                Try any plan risk-free for 7 days. If you're not completely
+                satisfied, we'll refund your money—no questions asked.
+              </p>
+              <div className="flex items-center gap-3 p-4 bg-emerald-600/20 border border-emerald-600/30 rounded-lg">
+                <span className="text-3xl">✓</span>
+                <div>
+                  <p className="font-semibold text-emerald-300">
+                    7-Day Money Back
+                  </p>
+                  <p className="text-sm text-slate-400">
+                    Cancel anytime, hassle-free
+                  </p>
+                </div>
+              </div>
+            </Card>
+
+            <Card className="p-6 bg-gradient-to-br from-blue-600/10 to-slate-800 border-blue-600/30">
+              <h3 className="text-xl font-bold mb-4 text-white flex items-center gap-2">
+                <span>🔒</span>
+                <span>Secure Payment</span>
+              </h3>
+              <p className="text-slate-300 mb-4">
+                Your payment information is encrypted and secure. We accept all
+                major credit cards and payment methods.
+              </p>
+              <div className="flex items-center gap-4 text-3xl">
+                <span>💳</span>
+                <span>🍎</span>
+                <span>💰</span>
+                <span>🔐</span>
+              </div>
+            </Card>
+          </div>
+        )}
+
+        {/* Paid User: Usage Stats (Optional) */}
+        {isPaidUser && (
+          <Card className="p-8 mt-8 bg-gradient-to-br from-slate-800 to-slate-900 border-slate-700">
+            <h2 className="text-2xl font-bold mb-6 text-white">
+              Your Usage This Month
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="p-5 bg-slate-900/50 rounded-xl border border-slate-700">
+                <div className="text-3xl mb-2">🎯</div>
+                <p className="text-2xl font-bold text-white mb-1">
+                  {userTier === "pro" ? "Unlimited" : "8"}
                 </p>
-                <p className="text-sm text-slate-400">
-                  Cancel anytime, hassle-free
-                </p>
+                <p className="text-sm text-slate-400">Active Programs</p>
+              </div>
+              <div className="p-5 bg-slate-900/50 rounded-xl border border-slate-700">
+                <div className="text-3xl mb-2">📊</div>
+                <p className="text-2xl font-bold text-white mb-1">156</p>
+                <p className="text-sm text-slate-400">Workouts Completed</p>
+              </div>
+              <div className="p-5 bg-slate-900/50 rounded-xl border border-slate-700">
+                <div className="text-3xl mb-2">⏱️</div>
+                <p className="text-2xl font-bold text-white mb-1">47h 23m</p>
+                <p className="text-sm text-slate-400">Total Training Time</p>
               </div>
             </div>
           </Card>
-
-          <Card className="p-6 bg-gradient-to-br from-blue-600/10 to-slate-800 border-blue-600/30">
-            <h3 className="text-xl font-bold mb-4 text-white flex items-center gap-2">
-              <span>🔒</span>
-              <span>Secure Payment</span>
-            </h3>
-            <p className="text-slate-300 mb-4">
-              Your payment information is encrypted and secure. We accept all
-              major credit cards and payment methods.
-            </p>
-            <div className="flex items-center gap-4 text-3xl">
-              <span>💳</span>
-              <span>🍎</span>
-              <span>💰</span>
-              <span>🔐</span>
-            </div>
-          </Card>
-        </div>
+        )}
       </div>
     </LayoutWrapper>
   );
