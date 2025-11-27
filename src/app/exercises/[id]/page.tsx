@@ -5,7 +5,8 @@ import Card from "@/components/shared/Card";
 import Button from "@/components/shared/Button";
 import { useState } from "react";
 import Link from "next/link";
-import { getExerciseById } from "@/data/exercise-data";
+import { getExerciseById, getAllExerciseDetails } from "@/data/exercise-data";
+import { useAuth } from "@/context/AuthContext";
 
 export default function ExerciseDetailPage({
   params,
@@ -16,9 +17,48 @@ export default function ExerciseDetailPage({
     "instructions" | "tips" | "variations"
   >("instructions");
   const [isFavorite, setIsFavorite] = useState(false);
+  const { user } = useAuth();
+  const isPaid = user?.subscription === "paid";
 
   // Fetch exercise data from database
   const exercise = getExerciseById(params.id);
+
+  // == GET ALL EXERCISES SO WE CAN KNOW WHICH INDEX THIS EXERCISE IS ==
+  const allExercises = getAllExerciseDetails();
+  const exerciseIndex = allExercises.findIndex((e) => e.id === params.id);
+
+  // == LOCK FREE USERS (ONLY ACCESS FIRST 3 EXERCISES) ==
+  const FREE_LIMIT = 12; // change to any number you want
+
+  if (!isPaid && exerciseIndex >= FREE_LIMIT) {
+    return (
+      <LayoutWrapper>
+        <div className="max-w-6xl mx-auto px-4 py-20 text-center">
+          <div className="text-7xl mb-6">🔒</div>
+          <h1 className="text-4xl font-bold text-white mb-4">
+            Premium Exercise
+          </h1>
+          <p className="text-slate-400 text-lg mb-8 max-w-xl mx-auto">
+            This exercise is available only for Premium members. Upgrade to
+            unlock full access to all exercises.
+          </p>
+
+          <Link href="/settings/subscription">
+            <button className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-10 py-4 rounded-xl text-lg font-semibold transition-all hover:scale-105 shadow-lg">
+              Upgrade to Premium →
+            </button>
+          </Link>
+
+          <Link
+            href="/exercises"
+            className="block mt-6 text-slate-400 hover:text-white"
+          >
+            ← Back to Exercise Library
+          </Link>
+        </div>
+      </LayoutWrapper>
+    );
+  }
 
   // Handle exercise not found
   if (!exercise) {
@@ -113,7 +153,6 @@ export default function ExerciseDetailPage({
             <p className="text-lg text-slate-300 mb-6 leading-relaxed max-w-3xl">
               {exercise.description}
             </p>
-
           </div>
         </div>
 

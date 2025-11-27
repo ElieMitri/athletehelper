@@ -235,7 +235,7 @@ export default function DashboardPage() {
           </Card>
 
           {/* Quick Links Grid */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          {/* <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             <Link href="/exercises">
               <Card className="p-6 text-center hover:border-blue-500 cursor-pointer transition-all hover:scale-[1.02] bg-gradient-to-br from-slate-800 to-slate-900 border-slate-700 group">
                 <div className="text-5xl mb-4 group-hover:scale-110 transition-transform">
@@ -274,7 +274,7 @@ export default function DashboardPage() {
                 <p className="text-sm text-slate-400">Unlock all features</p>
               </Card>
             </Link>
-          </div>
+          </div> */}
         </div>
       </LayoutWrapper>
     </ProtectedRoute>

@@ -347,7 +347,7 @@ export default function SubscriptionSettingsPage() {
         </Card>
 
         {/* Billing Cycle Toggle - Only show for free users */}
-        {!isPaidUser && (
+        {/* {!isPaidUser && (
           <div className="flex items-center justify-center gap-4 mb-8">
             <span
               className={`text-lg font-medium transition-colors ${
@@ -385,7 +385,7 @@ export default function SubscriptionSettingsPage() {
               Save up to 17%
             </span>
           </div>
-        )}
+        )} */}
 
         {/* Plans Grid - Only show for free users */}
         {!isPaidUser && (

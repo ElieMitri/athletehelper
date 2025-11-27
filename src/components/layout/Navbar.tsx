@@ -14,8 +14,8 @@ export default function Navbar() {
     { href: "/dashboard", label: "Dashboard" },
     { href: "/programs", label: "Programs" },
     { href: "/exercises", label: "Exercises" },
-    { href: "/planner", label: "Planner" },
     { href: "/rehab", label: "Rehab" },
+    { href: "/planner", label: "Planner" },
   ];
 
   const isActive = (href: string) => {

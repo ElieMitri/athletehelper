@@ -3,15 +3,34 @@
 import { useState } from "react";
 import Link from "next/link";
 import Button from "@/components/shared/Button";
+import { resetPassword } from "@/lib/auth";
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Reset password for:", email);
-    setSubmitted(true);
+    setError("");
+    setIsSubmitting(true);
+
+    console.log("🔍 Attempting password reset for:", email);
+
+    try {
+      console.log("📧 Calling resetPassword function...");
+      await resetPassword(email);
+      console.log("✅ Password reset email sent successfully!");
+      setSubmitted(true);
+    } catch (err) {
+      console.error("❌ Password reset failed:", err);
+      setError(
+        err instanceof Error ? err.message : "Failed to send reset email"
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -51,16 +70,51 @@ export default function ForgotPasswordPage() {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all hover:border-slate-600"
+                  disabled={isSubmitting}
+                  className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all hover:border-slate-600 disabled:opacity-50 disabled:cursor-not-allowed"
                   placeholder="you@example.com"
                   required
                 />
               </div>
+
+              {error && (
+                <div className="p-3 bg-red-600/10 border border-red-600/30 rounded-lg text-red-400 text-sm">
+                  {error}
+                </div>
+              )}
+
               <Button
                 type="submit"
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition-all transform hover:scale-[1.02] shadow-lg shadow-blue-600/20"
+                disabled={isSubmitting}
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition-all transform hover:scale-[1.02] shadow-lg shadow-blue-600/20 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
               >
-                Send Reset Link
+                {isSubmitting ? (
+                  <span className="flex items-center justify-center gap-2">
+                    <svg
+                      className="animate-spin h-5 w-5 text-white"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      ></circle>
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      ></path>
+                    </svg>
+                    Sending...
+                  </span>
+                ) : (
+                  "Send Reset Link"
+                )}
               </Button>
             </form>
           ) : (
@@ -76,8 +130,15 @@ export default function ForgotPasswordPage() {
                 <br />
                 <span className="text-white font-semibold">{email}</span>
               </p>
+              <p className="text-slate-500 text-sm mb-6">
+                If you don't see the email, check your spam folder.
+              </p>
               <Button
-                onClick={() => setSubmitted(false)}
+                onClick={() => {
+                  setSubmitted(false);
+                  setEmail("");
+                  setError("");
+                }}
                 variant="secondary"
                 className="w-full"
               >
@@ -111,16 +172,6 @@ export default function ForgotPasswordPage() {
             </div>
           </div>
         </div>
-
-        {/* <p className="text-center text-sm text-slate-500 mt-8">
-          Need help?{" "}
-          <Link
-            href="/contact"
-            className="text-slate-400 hover:text-slate-300 underline"
-          >
-            Contact support
-          </Link>
-        </p> */}
       </div>
     </div>
   );

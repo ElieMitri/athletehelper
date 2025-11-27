@@ -1,6 +1,7 @@
 // Complete program data - FULLY DETAILED for 4 programs (template for all 20)
 // Each program has complete exercise lists matching exercise counts and all weeks
 
+
 export interface ProgramDetail {
   id: string;
   title: string;
@@ -7696,15 +7697,15 @@ export const programsData: Record<string, ProgramDetail> = {
     rating: 4.9,
     icon: "⚽",
     color: "from-green-600 to-green-700",
-  
+
     goals: [
       "Improve reaction time and explosive diving",
       "Increase lateral quickness and footwork speed",
       "Develop power for aerial challenges and shot stopping",
       "Enhance stability, balance, and core control",
-      "Build endurance for repeated high-intensity efforts"
+      "Build endurance for repeated high-intensity efforts",
     ],
-  
+
     equipment: [
       "Cones",
       "Medicine Ball",
@@ -7712,22 +7713,22 @@ export const programsData: Record<string, ProgramDetail> = {
       "Mini Hurdles",
       "Goalkeeper Gloves",
       "Soccer Balls",
-      "Resistance Bands"
+      "Resistance Bands",
     ],
-  
+
     reviews: 154,
     completionRate: 92,
     avgImprovement: "19% reaction speed improvement",
     sessionsPerWeek: 3,
     totalSessions: 24,
-  
+
     coach: {
       name: "Coach Daniel Herrera",
       avatar: "⚽",
       credentials:
-        "UEFA GK License, Professional Goalkeeper Trainer, 11+ years experience"
+        "UEFA GK License, Professional Goalkeeper Trainer, 11+ years experience",
     },
-  
+
     weeks: [
       // WEEK 1 ------------------------------------------------------
       {
@@ -7745,8 +7746,8 @@ export const programsData: Record<string, ProgramDetail> = {
               "Mini Hurdle Quick Feet",
               "Cone Angled Movement",
               "Balance + Stability Hold",
-              "Cooldown Stretch"
-            ]
+              "Cooldown Stretch",
+            ],
           },
           {
             day: "Wednesday",
@@ -7759,8 +7760,8 @@ export const programsData: Record<string, ProgramDetail> = {
               "Light Diving Reaction",
               "Quick Shuffle → Set Position",
               "Core Activation",
-              "Mobility Work"
-            ]
+              "Mobility Work",
+            ],
           },
           {
             day: "Friday",
@@ -7773,12 +7774,12 @@ export const programsData: Record<string, ProgramDetail> = {
               "High Ball Take",
               "Footwork → Catch",
               "Angle Coverage Walkthrough",
-              "Recovery Stretch"
-            ]
-          }
-        ]
+              "Recovery Stretch",
+            ],
+          },
+        ],
       },
-  
+
       // WEEK 2 ------------------------------------------------------
       {
         week: 2,
@@ -7795,8 +7796,8 @@ export const programsData: Record<string, ProgramDetail> = {
               "Explosive Step-Outs",
               "Mini Hurdle Lateral Run",
               "Core Stability Work",
-              "Mobility"
-            ]
+              "Mobility",
+            ],
           },
           {
             day: "Wednesday",
@@ -7809,8 +7810,8 @@ export const programsData: Record<string, ProgramDetail> = {
               "High Shot Parry",
               "Quick Set + Save",
               "Agility Ladder Footwork",
-              "Cooldown"
-            ]
+              "Cooldown",
+            ],
           },
           {
             day: "Friday",
@@ -7823,12 +7824,12 @@ export const programsData: Record<string, ProgramDetail> = {
               "Landing Control",
               "Med Ball Chest Pass",
               "Stability Jumps",
-              "Stretch Routine"
-            ]
-          }
-        ]
+              "Stretch Routine",
+            ],
+          },
+        ],
       },
-  
+
       // WEEK 3 ------------------------------------------------------
       {
         week: 3,
@@ -7846,8 +7847,8 @@ export const programsData: Record<string, ProgramDetail> = {
               "Band-Resisted Lateral Drive",
               "Reaction Dive",
               "Core Power",
-              "Cooldown"
-            ]
+              "Cooldown",
+            ],
           },
           {
             day: "Wednesday",
@@ -7860,8 +7861,8 @@ export const programsData: Record<string, ProgramDetail> = {
               "Backpedal → Save",
               "Mini Hurdles Speed",
               "Agility Reaction",
-              "Stretch"
-            ]
+              "Stretch",
+            ],
           },
           {
             day: "Friday",
@@ -7875,12 +7876,12 @@ export const programsData: Record<string, ProgramDetail> = {
               "Med Ball Upward Throws",
               "Balance on Contact",
               "Landing Mechanics",
-              "Mobility"
-            ]
-          }
-        ]
+              "Mobility",
+            ],
+          },
+        ],
       },
-  
+
       // WEEK 4 ------------------------------------------------------
       {
         week: 4,
@@ -7896,8 +7897,8 @@ export const programsData: Record<string, ProgramDetail> = {
               "Easy Handling",
               "Light Angled Movement",
               "Core Activation",
-              "Stretch"
-            ]
+              "Stretch",
+            ],
           },
           {
             day: "Wednesday",
@@ -7909,8 +7910,8 @@ export const programsData: Record<string, ProgramDetail> = {
               "Clean Catch Technique",
               "Controlled Reaction Saves",
               "Movement Efficiency Flow",
-              "Mobility"
-            ]
+              "Mobility",
+            ],
           },
           {
             day: "Friday",
@@ -7922,12 +7923,12 @@ export const programsData: Record<string, ProgramDetail> = {
               "Light Agility Patterns",
               "Balance + Stability",
               "Breathing Work",
-              "Long Stretch Routine"
-            ]
-          }
-        ]
+              "Long Stretch Routine",
+            ],
+          },
+        ],
       },
-  
+
       // WEEK 5 ------------------------------------------------------
       {
         week: 5,
@@ -7945,8 +7946,8 @@ export const programsData: Record<string, ProgramDetail> = {
               "Extended Range Diving",
               "Quick Recovery + Save",
               "Core Strength",
-              "Cooldown"
-            ]
+              "Cooldown",
+            ],
           },
           {
             day: "Wednesday",
@@ -7960,8 +7961,8 @@ export const programsData: Record<string, ProgramDetail> = {
               "Angle Adjustment",
               "Shuttle Footwork",
               "Agility Ladder",
-              "Stretch"
-            ]
+              "Stretch",
+            ],
           },
           {
             day: "Friday",
@@ -7975,12 +7976,12 @@ export const programsData: Record<string, ProgramDetail> = {
               "Med Ball Catching Power",
               "Lateral Jump → Catch",
               "Balance Control",
-              "Mobility"
-            ]
-          }
-        ]
+              "Mobility",
+            ],
+          },
+        ],
       },
-  
+
       // WEEK 6 ------------------------------------------------------
       {
         week: 6,
@@ -7998,8 +7999,8 @@ export const programsData: Record<string, ProgramDetail> = {
               "Cutback Reaction",
               "Angle Adjustment Drill",
               "Core Power",
-              "Stretch"
-            ]
+              "Stretch",
+            ],
           },
           {
             day: "Wednesday",
@@ -8013,8 +8014,8 @@ export const programsData: Record<string, ProgramDetail> = {
               "COD Footwork",
               "Reaction Catching",
               "Mini Hurdle Speed",
-              "Mobility"
-            ]
+              "Mobility",
+            ],
           },
           {
             day: "Friday",
@@ -8028,12 +8029,12 @@ export const programsData: Record<string, ProgramDetail> = {
               "Far Post Dive",
               "Reaction Parry",
               "Keeper Conditioning Set",
-              "Cooldown"
-            ]
-          }
-        ]
+              "Cooldown",
+            ],
+          },
+        ],
       },
-  
+
       // WEEK 7 ------------------------------------------------------
       {
         week: 7,
@@ -8051,8 +8052,8 @@ export const programsData: Record<string, ProgramDetail> = {
               "Lateral Dive Sprints",
               "Net Recovery Saves",
               "Core Strength",
-              "Stretch"
-            ]
+              "Stretch",
+            ],
           },
           {
             day: "Wednesday",
@@ -8066,8 +8067,8 @@ export const programsData: Record<string, ProgramDetail> = {
               "Breakaway Situations",
               "Cutback Reaction",
               "Keeper Endurance",
-              "Mobility"
-            ]
+              "Mobility",
+            ],
           },
           {
             day: "Friday",
@@ -8081,12 +8082,12 @@ export const programsData: Record<string, ProgramDetail> = {
               "Shot Volume Training",
               "Recovery + Reset",
               "Core Control",
-              "Cooldown"
-            ]
-          }
-        ]
+              "Cooldown",
+            ],
+          },
+        ],
       },
-  
+
       // WEEK 8 ------------------------------------------------------
       {
         week: 8,
@@ -8103,8 +8104,8 @@ export const programsData: Record<string, ProgramDetail> = {
               "High Dive Test",
               "Footwork Speed Assessment",
               "Light Maintenance",
-              "Stretch"
-            ]
+              "Stretch",
+            ],
           },
           {
             day: "Wednesday",
@@ -8117,8 +8118,8 @@ export const programsData: Record<string, ProgramDetail> = {
               "Balance + Stability Assessment",
               "Light Mobility",
               "Breathing Work",
-              "Cooldown"
-            ]
+              "Cooldown",
+            ],
           },
           {
             day: "Friday",
@@ -8131,12 +8132,12 @@ export const programsData: Record<string, ProgramDetail> = {
               "Technique Breakdown",
               "Progress Summary",
               "Next Training Roadmap",
-              "Celebration Cooldown"
-            ]
-          }
-        ]
-      }
-    ]
+              "Celebration Cooldown",
+            ],
+          },
+        ],
+      },
+    ],
   },
   "19": {
     id: "19",
@@ -8151,37 +8152,37 @@ export const programsData: Record<string, ProgramDetail> = {
     rating: 4.8,
     icon: "⚽",
     color: "from-green-600 to-green-700",
-  
+
     goals: [
       "Improve coordination, balance, and agility",
       "Build safe foundational strength and body control",
       "Develop speed and quickness through fun drills",
       "Enhance ball handling and movement skills",
-      "Boost confidence and athletic awareness"
+      "Boost confidence and athletic awareness",
     ],
-  
+
     equipment: [
       "Cones",
       "Mini Hurdles",
       "Agility Ladder",
       "Small Soccer Balls",
       "Resistance Bands (light)",
-      "Markers"
+      "Markers",
     ],
-  
+
     reviews: 412,
     completionRate: 93,
     avgImprovement: "21% athletic skill improvement",
     sessionsPerWeek: 3,
     totalSessions: 24,
-  
+
     coach: {
       name: "Coach Lily Thompson",
       avatar: "⚽",
       credentials:
-        "Youth Development Specialist, USSF C License, 8+ years experience"
+        "Youth Development Specialist, USSF C License, 8+ years experience",
     },
-  
+
     weeks: [
       // WEEK 1 ------------------------------------------------------
       {
@@ -8198,8 +8199,8 @@ export const programsData: Record<string, ProgramDetail> = {
               "Cone Zig-Zag Run",
               "Balance Walks",
               "Light Ball Dribbling",
-              "Stretching"
-            ]
+              "Stretching",
+            ],
           },
           {
             day: "Wednesday",
@@ -8211,8 +8212,8 @@ export const programsData: Record<string, ProgramDetail> = {
               "Forward/Back Shuttle Runs",
               "Directional Changes",
               "Fun Reaction Games",
-              "Cooldown"
-            ]
+              "Cooldown",
+            ],
           },
           {
             day: "Friday",
@@ -8224,12 +8225,12 @@ export const programsData: Record<string, ProgramDetail> = {
               "Single-Leg Balance",
               "Core Activation",
               "Light Dribbling Circuits",
-              "Mobility Work"
-            ]
-          }
-        ]
+              "Mobility Work",
+            ],
+          },
+        ],
       },
-  
+
       // WEEK 2 ------------------------------------------------------
       {
         week: 2,
@@ -8246,8 +8247,8 @@ export const programsData: Record<string, ProgramDetail> = {
               "Light Chase Sprints",
               "Mini Hurdle Speed",
               "Coordination Games",
-              "Stretch"
-            ]
+              "Stretch",
+            ],
           },
           {
             day: "Wednesday",
@@ -8259,8 +8260,8 @@ export const programsData: Record<string, ProgramDetail> = {
               "Inside/Outside Touches",
               "Ball Shielding Basics",
               "Light Passing Work",
-              "Mobility"
-            ]
+              "Mobility",
+            ],
           },
           {
             day: "Friday",
@@ -8273,12 +8274,12 @@ export const programsData: Record<string, ProgramDetail> = {
               "Stop-Go Drills",
               "Reaction Direction Change",
               "Core Balance",
-              "Stretch"
-            ]
-          }
-        ]
+              "Stretch",
+            ],
+          },
+        ],
       },
-  
+
       // WEEK 3 ------------------------------------------------------
       {
         week: 3,
@@ -8295,8 +8296,8 @@ export const programsData: Record<string, ProgramDetail> = {
               "Reaction Starts",
               "Light Dribbling at Speed",
               "Core Strength Beginner",
-              "Cooldown"
-            ]
+              "Cooldown",
+            ],
           },
           {
             day: "Wednesday",
@@ -8309,8 +8310,8 @@ export const programsData: Record<string, ProgramDetail> = {
               "Directional Change Drills",
               "Ball Control Under Movement",
               "Balance Games",
-              "Stretch"
-            ]
+              "Stretch",
+            ],
           },
           {
             day: "Friday",
@@ -8323,12 +8324,12 @@ export const programsData: Record<string, ProgramDetail> = {
               "Stop–Start Footwork",
               "Controlled Jumps",
               "Core Mini Circuit",
-              "Mobility Flow"
-            ]
-          }
-        ]
+              "Mobility Flow",
+            ],
+          },
+        ],
       },
-  
+
       // WEEK 4 ------------------------------------------------------
       {
         week: 4,
@@ -8344,8 +8345,8 @@ export const programsData: Record<string, ProgramDetail> = {
               "Light Ladder Work",
               "Slow Dribbling Course",
               "Balance Play",
-              "Stretch"
-            ]
+              "Stretch",
+            ],
           },
           {
             day: "Wednesday",
@@ -8357,8 +8358,8 @@ export const programsData: Record<string, ProgramDetail> = {
               "Passing Accuracy",
               "Simple Agility Patterns",
               "Core Stability",
-              "Mobility Work"
-            ]
+              "Mobility Work",
+            ],
           },
           {
             day: "Friday",
@@ -8370,12 +8371,12 @@ export const programsData: Record<string, ProgramDetail> = {
               "Movement Flow",
               "Coordination Challenges",
               "Breathing Work",
-              "Stretch Routine"
-            ]
-          }
-        ]
+              "Stretch Routine",
+            ],
+          },
+        ],
       },
-  
+
       // WEEK 5 ------------------------------------------------------
       {
         week: 5,
@@ -8392,8 +8393,8 @@ export const programsData: Record<string, ProgramDetail> = {
               "Lunges (light)",
               "Core Stability Training",
               "Balance Circuit",
-              "Cooldown"
-            ]
+              "Cooldown",
+            ],
           },
           {
             day: "Wednesday",
@@ -8406,8 +8407,8 @@ export const programsData: Record<string, ProgramDetail> = {
               "Quick Feet Circuits",
               "Ball Dribbling at Moderate Speed",
               "Coordination Flow",
-              "Stretch"
-            ]
+              "Stretch",
+            ],
           },
           {
             day: "Friday",
@@ -8420,12 +8421,12 @@ export const programsData: Record<string, ProgramDetail> = {
               "Short Shuttle Repeats",
               "Ball Touch Intervals",
               "Core & Balance",
-              "Mobility"
-            ]
-          }
-        ]
+              "Mobility",
+            ],
+          },
+        ],
       },
-  
+
       // WEEK 6 ------------------------------------------------------
       {
         week: 6,
@@ -8442,8 +8443,8 @@ export const programsData: Record<string, ProgramDetail> = {
               "Mini Hurdle Speed",
               "Direction Change with Ball",
               "Directional Touches",
-              "Cooldown"
-            ]
+              "Cooldown",
+            ],
           },
           {
             day: "Wednesday",
@@ -8456,8 +8457,8 @@ export const programsData: Record<string, ProgramDetail> = {
               "Fun Footwork Patterns",
               "Balance + Coordination Flow",
               "Core Basics",
-              "Stretch"
-            ]
+              "Stretch",
+            ],
           },
           {
             day: "Friday",
@@ -8470,12 +8471,12 @@ export const programsData: Record<string, ProgramDetail> = {
               "Stop–Start Speed",
               "Light Jumps",
               "Footwork Conditioning",
-              "Mobility"
-            ]
-          }
-        ]
+              "Mobility",
+            ],
+          },
+        ],
       },
-  
+
       // WEEK 7 ------------------------------------------------------
       {
         week: 7,
@@ -8492,8 +8493,8 @@ export const programsData: Record<string, ProgramDetail> = {
               "Directional Ball Movement",
               "Lateral Speed Training",
               "Core Coordination",
-              "Cooldown"
-            ]
+              "Cooldown",
+            ],
           },
           {
             day: "Wednesday",
@@ -8506,8 +8507,8 @@ export const programsData: Record<string, ProgramDetail> = {
               "Agility with Ball Control",
               "Short Reaction Runs",
               "Balance Work",
-              "Stretch Routine"
-            ]
+              "Stretch Routine",
+            ],
           },
           {
             day: "Friday",
@@ -8521,12 +8522,12 @@ export const programsData: Record<string, ProgramDetail> = {
               "Agility Box Circuit",
               "Light Conditioning",
               "Core Flow",
-              "Mobility"
-            ]
-          }
-        ]
+              "Mobility",
+            ],
+          },
+        ],
       },
-  
+
       // WEEK 8 ------------------------------------------------------
       {
         week: 8,
@@ -8543,8 +8544,8 @@ export const programsData: Record<string, ProgramDetail> = {
               "Cone COD Test",
               "Movement Control Review",
               "Light Skills Work",
-              "Cooldown"
-            ]
+              "Cooldown",
+            ],
           },
           {
             day: "Wednesday",
@@ -8557,8 +8558,8 @@ export const programsData: Record<string, ProgramDetail> = {
               "Passing Accuracy Check",
               "Coordination Review",
               "Mobility Work",
-              "Stretch"
-            ]
+              "Stretch",
+            ],
           },
           {
             day: "Friday",
@@ -8571,12 +8572,12 @@ export const programsData: Record<string, ProgramDetail> = {
               "Confidence Drills",
               "Progress Reflection",
               "Future Plan",
-              "Celebration Cooldown"
-            ]
-          }
-        ]
-      }
-    ]
+              "Celebration Cooldown",
+            ],
+          },
+        ],
+      },
+    ],
   },
   "20": {
     id: "20",
@@ -8586,21 +8587,21 @@ export const programsData: Record<string, ProgramDetail> = {
     duration: "6 weeks",
     description:
       "Intensive pre-season training block designed to peak your fitness, strength, speed, and match readiness right before the season begins. High-intensity sessions for competitive players gearing up for full match demands.",
-  
+
     workouts: 18,
     enrolled: 892,
     rating: 4.9,
     icon: "⚽",
     color: "from-green-600 to-green-700",
-  
+
     goals: [
       "Reach peak conditioning before the season",
       "Improve high-intensity running capacity",
       "Increase top-end speed and acceleration",
       "Develop strength and power for match demands",
-      "Sharpen technical skills under conditioning load"
+      "Sharpen technical skills under conditioning load",
     ],
-  
+
     equipment: [
       "Soccer Field",
       "Cones",
@@ -8608,21 +8609,22 @@ export const programsData: Record<string, ProgramDetail> = {
       "Agility Ladder",
       "Resistance Bands",
       "Stopwatch",
-      "Soccer Ball"
+      "Soccer Ball",
     ],
-  
+
     reviews: 312,
     completionRate: 94,
     avgImprovement: "27% match-readiness improvement",
     sessionsPerWeek: 3,
     totalSessions: 18,
-  
+
     coach: {
       name: "Coach Rafael Mendes",
       avatar: "⚽",
-      credentials: "UEFA A License, Elite Performance Coach, 15+ years experience"
+      credentials:
+        "UEFA A License, Elite Performance Coach, 15+ years experience",
     },
-  
+
     weeks: [
       // WEEK 1 ------------------------------------------------------
       {
@@ -8640,8 +8642,8 @@ export const programsData: Record<string, ProgramDetail> = {
               "Dribbling Endurance",
               "1-2 Passing Patterns",
               "Core Stability",
-              "Cooldown"
-            ]
+              "Cooldown",
+            ],
           },
           {
             day: "Wednesday",
@@ -8654,8 +8656,8 @@ export const programsData: Record<string, ProgramDetail> = {
               "Ball Control in Motion",
               "Directional Dribbling",
               "Reaction Passing",
-              "Stretch"
-            ]
+              "Stretch",
+            ],
           },
           {
             day: "Friday",
@@ -8669,12 +8671,12 @@ export const programsData: Record<string, ProgramDetail> = {
               "Short Shuttle Runs",
               "Core Strength",
               "Mobility",
-              "Cooldown"
-            ]
-          }
-        ]
+              "Cooldown",
+            ],
+          },
+        ],
       },
-  
+
       // WEEK 2 ------------------------------------------------------
       {
         week: 2,
@@ -8691,8 +8693,8 @@ export const programsData: Record<string, ProgramDetail> = {
               "Overspeed Drills",
               "COD Without Ball",
               "Acceleration Ladder",
-              "Mobility"
-            ]
+              "Mobility",
+            ],
           },
           {
             day: "Wednesday",
@@ -8705,8 +8707,8 @@ export const programsData: Record<string, ProgramDetail> = {
               "Short Hill Sprints",
               "Med Ball Power Throws",
               "Core Power",
-              "Stretch Routine"
-            ]
+              "Stretch Routine",
+            ],
           },
           {
             day: "Friday",
@@ -8720,12 +8722,12 @@ export const programsData: Record<string, ProgramDetail> = {
               "Ball Recovery Challenges",
               "Technical Speed",
               "Conditioning",
-              "Cooldown"
-            ]
-          }
-        ]
+              "Cooldown",
+            ],
+          },
+        ],
       },
-  
+
       // WEEK 3 ------------------------------------------------------
       {
         week: 3,
@@ -8742,8 +8744,8 @@ export const programsData: Record<string, ProgramDetail> = {
               "Agility Transitions",
               "Directional Change Drills",
               "Core Strength",
-              "Cooldown"
-            ]
+              "Cooldown",
+            ],
           },
           {
             day: "Wednesday",
@@ -8757,8 +8759,8 @@ export const programsData: Record<string, ProgramDetail> = {
               "Pressing Pattern Training",
               "Sprint-Jog Intervals",
               "Mobility",
-              "Stretch"
-            ]
+              "Stretch",
+            ],
           },
           {
             day: "Friday",
@@ -8772,12 +8774,12 @@ export const programsData: Record<string, ProgramDetail> = {
               "Defensive Recovery Runs",
               "Finishing Under Fatigue",
               "Cooldown",
-              "Mobility"
-            ]
-          }
-        ]
+              "Mobility",
+            ],
+          },
+        ],
       },
-  
+
       // WEEK 4 ------------------------------------------------------
       {
         week: 4,
@@ -8794,8 +8796,8 @@ export const programsData: Record<string, ProgramDetail> = {
               "Bounding + Power",
               "Agility Lanes",
               "Core Power",
-              "Stretch"
-            ]
+              "Stretch",
+            ],
           },
           {
             day: "Wednesday",
@@ -8809,8 +8811,8 @@ export const programsData: Record<string, ProgramDetail> = {
               "Directional Play Drills",
               "High-Intensity Blocks",
               "Mobility Work",
-              "Cooldown"
-            ]
+              "Cooldown",
+            ],
           },
           {
             day: "Friday",
@@ -8823,12 +8825,12 @@ export const programsData: Record<string, ProgramDetail> = {
               "Acceleration Touch Work",
               "Finishing Sprint Drills",
               "Core Strength",
-              "Stretch Routine"
-            ]
-          }
-        ]
+              "Stretch Routine",
+            ],
+          },
+        ],
       },
-  
+
       // WEEK 5 ------------------------------------------------------
       {
         week: 5,
@@ -8845,8 +8847,8 @@ export const programsData: Record<string, ProgramDetail> = {
               "Ball Work Under Fatigue",
               "Transition Speed",
               "Reaction Drills",
-              "Cooldown"
-            ]
+              "Cooldown",
+            ],
           },
           {
             day: "Wednesday",
@@ -8860,8 +8862,8 @@ export const programsData: Record<string, ProgramDetail> = {
               "Pressing and Recovery",
               "Counterattack Execution",
               "Mobility",
-              "Stretch"
-            ]
+              "Stretch",
+            ],
           },
           {
             day: "Friday",
@@ -8875,12 +8877,12 @@ export const programsData: Record<string, ProgramDetail> = {
               "Finishing Repeats",
               "Game Scenarios",
               "Cooldown",
-              "Recovery Focus"
-            ]
-          }
-        ]
+              "Recovery Focus",
+            ],
+          },
+        ],
       },
-  
+
       // WEEK 6 ------------------------------------------------------
       {
         week: 6,
@@ -8896,8 +8898,8 @@ export const programsData: Record<string, ProgramDetail> = {
               "20m Acceleration Test",
               "30m Sprint Test",
               "Light Agility Work",
-              "Stretch"
-            ]
+              "Stretch",
+            ],
           },
           {
             day: "Wednesday",
@@ -8909,8 +8911,8 @@ export const programsData: Record<string, ProgramDetail> = {
               "Agility T-Test",
               "Ball Control Assessment",
               "Core Stability",
-              "Cooldown"
-            ]
+              "Cooldown",
+            ],
           },
           {
             day: "Friday",
@@ -8922,16 +8924,14 @@ export const programsData: Record<string, ProgramDetail> = {
               "Ball Circulation",
               "Mobility Flow",
               "Breathing + Recovery",
-              "Season Preparation Briefing"
-            ]
-          }
-        ]
-      }
-    ]
+              "Season Preparation Briefing",
+            ],
+          },
+        ],
+      },
+    ],
   },
-      
 };
-
 // Helper functions
 export const getProgramById = (id: string): ProgramDetail | null => {
   return programsData[id] || null;
@@ -8940,6 +8940,32 @@ export const getProgramById = (id: string): ProgramDetail | null => {
 export const getAllPrograms = (): ProgramDetail[] => {
   return Object.values(programsData);
 };
+
+// Helper to check if program is free or paid
+export const isProgramFree = (programId: string): boolean => {
+  const FREE_PROGRAM_IDS = ["1", "2", "3"];
+  return FREE_PROGRAM_IDS.includes(programId);
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // NOTE: Programs 2, 3, 5-10, 12, 13, 15-20 would follow this exact same structure
 // Each with complete exercise lists matching their exercise counts

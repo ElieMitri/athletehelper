@@ -27,7 +27,7 @@ export default function ProgramDetailPage({ params }) {
 
 
   // == LOCK FREE USERS (ONLY ACCESS FIRST 6 PROGRAMS) ==
-  const FREE_LIMIT = 6; // change to any number you want
+  const FREE_LIMIT = 3; // change to any number you want
 
   if (!isPaid && programIndex >= FREE_LIMIT) {
     return (

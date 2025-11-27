@@ -8,12 +8,36 @@ import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
 import { doc, getDoc, updateDoc, setDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase"; // your firebase config path
+import { deleteAccount } from "@/lib/auth";
+import { useRouter } from "next/navigation";
 
 export default function ProfileSettingsPage() {
   const { logout, user, loading } = useAuth();
 
   const [activeTab, setActiveTab] = useState("profile");
   const [isSaving, setIsSaving] = useState(false);
+  const [showConfirmation, setShowConfirmation] = useState(false);
+  const [password, setPassword] = useState("");
+  const [loading2, setLoading2] = useState("");
+  const [error, setError] = useState("");
+  const router = useRouter(false);
+
+  const handleDeleteAccount = async (e) => {
+    e.preventDefault();
+    setError("");
+    setLoading2(true);
+
+    try {
+      await deleteAccount(password);
+
+      // Success - redirect to homepage
+      alert("Your account has been deleted successfully.");
+      router.push("/");
+    } catch (err) {
+      setError(err.message);
+      setLoading2(false);
+    }
+  };
 
   // ===========================
   // FIXED: safe initialization
@@ -239,7 +263,7 @@ export default function ProfileSettingsPage() {
         </div>
 
         {/* Profile Tab */}
-        {activeTab === "profile" && (
+        {/* {activeTab === "profile" && (
           <Card className="p-8 mb-6 bg-gradient-to-br from-slate-800 to-slate-900 border-slate-700">
             <h2 className="text-2xl font-bold mb-6 text-white flex items-center gap-2">
               <span>👤</span>
@@ -399,10 +423,10 @@ export default function ProfileSettingsPage() {
               </div>
             </form>
           </Card>
-        )}
+        )} */}
 
         {/* Preferences Tab */}
-        {activeTab === "preferences" && (
+        {/* {activeTab === "preferences" && (
           <Card className="p-8 mb-6 bg-gradient-to-br from-slate-800 to-slate-900 border-slate-700">
             <h2 className="text-2xl font-bold mb-6 text-white flex items-center gap-2">
               <span>⚙️</span>
@@ -477,7 +501,7 @@ export default function ProfileSettingsPage() {
               </Button>
             </div>
           </Card>
-        )}
+        )} */}
 
         {/* Notifications Tab */}
         {activeTab === "notifications" && (
@@ -628,18 +652,97 @@ export default function ProfileSettingsPage() {
 
         {/* Danger Zone */}
         <Card className="p-6 bg-gradient-to-br from-red-950/30 to-slate-800 border-red-600/30">
-          <h2 className="text-xl font-bold mb-4 text-red-400 flex items-center gap-2">
+          <h2 className="text-2xl font-bold text-white mb-2 flex items-center gap-2">
             <span>⚠️</span>
             <span>Danger Zone</span>
           </h2>
-          <p className="text-slate-400 mb-4">
-            Permanently delete your account and all associated data. This action
-            cannot be undone and all your training data, programs, and progress
-            will be lost forever.
+          <p className="text-slate-400 mb-6">
+            Once you delete your account, there is no going back. Please be
+            certain.
           </p>
-          <Button variant="danger" className="bg-red-600 hover:bg-red-700">
-            Delete Account
-          </Button>
+
+          {!showConfirmation ? (
+            <button
+              onClick={() => setShowConfirmation(true)}
+              className="px-6 py-3 rounded-lg font-semibold bg-red-600 hover:bg-red-700 text-white transition-all border border-red-500"
+            >
+              Delete My Account
+            </button>
+          ) : (
+            <div className="space-y-4">
+              <div className="p-4 bg-red-600/10 border border-red-600/30 rounded-lg">
+                <h3 className="font-bold text-white mb-2 flex items-center gap-2">
+                  <span>⚠️</span>
+                  <span>Are you absolutely sure?</span>
+                </h3>
+                <p className="text-slate-300 text-sm mb-3">
+                  This action <strong>cannot be undone</strong>. This will
+                  permanently delete your:
+                </p>
+                <ul className="text-slate-400 text-sm space-y-1 mb-4">
+                  <li className="flex items-center gap-2">
+                    <span>•</span>
+                    <span>Account and profile information</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span>•</span>
+                    <span>All saved programs and progress</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span>•</span>
+                    <span>Subscription and billing history</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span>•</span>
+                    <span>All personal data associated with your account</span>
+                  </li>
+                </ul>
+              </div>
+
+              <form onSubmit={handleDeleteAccount} className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-slate-300 mb-2">
+                    Enter your password to confirm
+                  </label>
+                  <input
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="Enter your password"
+                    required
+                    className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white placeholder-slate-500 focus:outline-none focus:border-red-600 transition-colors"
+                  />
+                </div>
+
+                {error && (
+                  <div className="p-3 bg-red-600/10 border border-red-600/30 rounded-lg text-red-400 text-sm">
+                    {error}
+                  </div>
+                )}
+
+                <div className="flex gap-3">
+                  <button
+                    type="submit"
+                    disabled={loading || !password}
+                    className="px-6 py-3 rounded-lg font-semibold bg-red-600 hover:bg-red-700 text-white transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {loading ? "Deleting..." : "Yes, Delete My Account"}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowConfirmation(false);
+                      setPassword("");
+                      setError("");
+                    }}
+                    className="px-6 py-3 rounded-lg font-semibold bg-slate-700 hover:bg-slate-600 text-white transition-all"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            </div>
+          )}
         </Card>
       </div>
     </LayoutWrapper>

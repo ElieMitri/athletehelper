@@ -5,7 +5,8 @@ import Card from "@/components/shared/Card";
 import Button from "@/components/shared/Button";
 import { useState } from "react";
 import Link from "next/link";
-import { getRehabDetailOrDefault } from "@/data/rehab-details";
+import { getRehabDetailOrDefault, rehabDetails } from "@/data/rehab-details";
+import { useAuth } from "@/context/AuthContext";
 
 export default function RehabDetailPage({
   params,
@@ -14,9 +15,48 @@ export default function RehabDetailPage({
 }) {
   const [activePhase, setActivePhase] = useState(1);
   const [isSaved, setIsSaved] = useState(false);
+  const { user } = useAuth();
+  const isPaid = user?.subscription === "paid";
 
   // Get rehab data dynamically - works for all 30 programs
   const rehab = getRehabDetailOrDefault(params.id);
+
+  // == GET ALL REHAB PROGRAMS SO WE CAN KNOW WHICH INDEX THIS PROGRAM IS ==
+  const allRehabPrograms = Object.keys(rehabDetails);
+  const programIndex = allRehabPrograms.indexOf(params.id);
+
+  // == LOCK FREE USERS (ONLY ACCESS FIRST 3 PROGRAMS) ==
+  const FREE_LIMIT = 4; // change to any number you want
+
+  if (!isPaid && programIndex >= FREE_LIMIT) {
+    return (
+      <LayoutWrapper>
+        <div className="max-w-6xl mx-auto px-4 py-20 text-center">
+          <div className="text-7xl mb-6">🔒</div>
+          <h1 className="text-4xl font-bold text-white mb-4">
+            Premium Rehabilitation Program
+          </h1>
+          <p className="text-slate-400 text-lg mb-8 max-w-xl mx-auto">
+            This rehabilitation protocol is available only for Premium members.
+            Upgrade to unlock full access to all rehabilitation programs.
+          </p>
+
+          <Link href="/settings/subscription">
+            <button className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-10 py-4 rounded-xl text-lg font-semibold transition-all hover:scale-105 shadow-lg">
+              Upgrade to Premium →
+            </button>
+          </Link>
+
+          <Link
+            href="/rehab"
+            className="block mt-6 text-slate-400 hover:text-white"
+          >
+            ← Back to Rehabilitation Programs
+          </Link>
+        </div>
+      </LayoutWrapper>
+    );
+  }
 
   // Determine severity color
   const getSeverityColor = () => {
