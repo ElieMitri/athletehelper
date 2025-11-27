@@ -1837,9 +1837,19 @@ export default function ExercisesPage() {
         {filteredExercises.length > 0 ? (
           <>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {visibleExercises.map((exercise) => (
-                <ExerciseCard key={exercise.id} {...exercise} />
-              ))}
+              {visibleExercises.map((exercise) => {
+                const fullIndex = filteredExercises.findIndex(
+                  (e) => e.id === exercise.id
+                );
+
+                return (
+                  <ExerciseCard
+                    key={exercise.id}
+                    {...exercise}
+                    locked={fullIndex >= 12} // <--- BLUR AFTER FIRST 12
+                  />
+                );
+              })}
             </div>
 
             {/* Show More Button */}

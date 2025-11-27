@@ -5,46 +5,59 @@ import Link from "next/link";
 import Button from "@/components/shared/Button";
 import Image from "next/image";
 import Logo from "../../../images/athletehelper.png";
-import { useRouter } from "next/navigation";
-import { login } from "@/lib/auth";
-import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "@/lib/firebase";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useAuth } from "@/context/AuthContext";
 
 export default function LoginPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const { login, isAuthenticated, loading: authLoading } = useAuth();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
+  // Check if redirected due to session expiry
+  const reason = searchParams.get("reason");
+
   // 🔒 If user is already logged in, redirect to dashboard
   useEffect(() => {
-    const unsub = onAuthStateChanged(auth, (user) => {
-      if (user) router.replace("/dashboard");
-    });
-    return () => unsub();
-  }, [router]);
+    if (!authLoading && isAuthenticated) {
+      router.replace("/dashboard");
+    }
+  }, [isAuthenticated, authLoading, router]);
 
-  const handleSubmit = async (e: any) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     setLoading(true);
 
     try {
-      await login(email, password); // ← uses your Firebase + cookie logic
+      await login(email, password);
+      // Login successful - session will be set automatically in AuthContext
+      console.log("✓ Login successful - other devices logged out");
       router.replace("/dashboard");
-    } catch (err: unknown) {
-      console.error(err);
+    } catch (err: any) {
+      console.error("Login error:", err);
 
-      if (err instanceof Error) {
-        setError(err.message);
+      // Handle specific Firebase error codes
+      if (err.code === "auth/wrong-password") {
+        setError("Incorrect password. Please try again.");
+      } else if (err.code === "auth/user-not-found") {
+        setError("No account found with this email.");
+      } else if (err.code === "auth/invalid-email") {
+        setError("Invalid email address.");
+      } else if (err.code === "auth/too-many-requests") {
+        setError("Too many failed attempts. Please try again later.");
+      } else if (err.code === "auth/network-request-failed") {
+        setError("Network error. Please check your connection.");
       } else {
-        setError("Failed to sign in.");
+        setError(err.message || "Failed to sign in. Please try again.");
       }
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   };
 
   return (
@@ -64,11 +77,40 @@ export default function LoginPage() {
           </p>
         </div>
 
+        {/* Session Expired Warning */}
+        {reason === "session_expired" && (
+          <div className="mb-6 p-4 bg-orange-600/20 border border-orange-600/50 rounded-xl">
+            <div className="flex items-start gap-3">
+              <span className="text-2xl">⚠️</span>
+              <div>
+                <p className="text-orange-400 font-semibold mb-1">
+                  Session Expired
+                </p>
+                <p className="text-orange-300 text-sm">
+                  Your account was logged in from another device. Please log in
+                  again to continue.
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
         <div className="bg-slate-900/50 backdrop-blur-sm border border-slate-800 rounded-2xl shadow-2xl p-8">
-          {error && (
-            <p className="text-red-400 text-sm mb-4 font-medium text-center">
-              {error}
+          {/* Single Device Info Banner */}
+          <div className="mb-6 p-3 bg-blue-600/10 border border-blue-600/30 rounded-lg">
+            <p className="text-blue-400 text-sm flex items-center gap-2">
+              <span>🔒</span>
+              <span>
+                Logging in here will log out any other devices for security.
+              </span>
             </p>
+          </div>
+
+          {/* Error Message */}
+          {error && (
+            <div className="mb-6 p-4 bg-red-600/20 border border-red-600/50 rounded-lg">
+              <p className="text-red-400 text-sm font-medium">{error}</p>
+            </div>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-5">
@@ -83,6 +125,7 @@ export default function LoginPage() {
                 className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all hover:border-slate-600"
                 placeholder="you@example.com"
                 required
+                disabled={loading}
               />
             </div>
 
@@ -105,15 +148,38 @@ export default function LoginPage() {
                 className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all hover:border-slate-600"
                 placeholder="••••••••"
                 required
+                disabled={loading}
               />
             </div>
 
             <Button
               type="submit"
               disabled={loading}
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition-all transform hover:scale-[1.02] shadow-lg shadow-blue-600/20 disabled:opacity-50"
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition-all transform hover:scale-[1.02] shadow-lg shadow-blue-600/20 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {loading ? "Signing In..." : "Sign In"}
+              {loading ? (
+                <span className="flex items-center justify-center gap-2">
+                  <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                      fill="none"
+                    />
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    />
+                  </svg>
+                  Signing In...
+                </span>
+              ) : (
+                "Sign In"
+              )}
             </Button>
           </form>
 
@@ -159,6 +225,13 @@ export default function LoginPage() {
             Privacy Policy
           </Link>
         </p>
+
+        {/* Additional Security Info */}
+        <div className="mt-4 text-center">
+          <p className="text-slate-600 text-xs">
+            🔒 For security, only one device can be logged in at a time
+          </p>
+        </div>
       </div>
     </div>
   );

@@ -4,11 +4,23 @@ import LayoutWrapper from "@/components/layout/LayoutWrapper";
 import ProgramCard from "@/components/programs/ProgramCard";
 import { useState } from "react";
 import Link from "next/link";
+import { useAuth } from "@/context/AuthContext";
 
 export default function ProgramsPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedSport, setSelectedSport] = useState("All");
   const [selectedLevel, setSelectedLevel] = useState("All Levels");
+  const { user, loading } = useAuth();
+
+  if (loading) {
+    return (
+      <div className="w-full h-screen flex items-center justify-center bg-[#0a0a0a]">
+        <div className="animate-spin h-12 w-12 border-4 border-blue-600 border-t-transparent rounded-full"></div>
+      </div>
+    );
+  }
+
+  console.log(user.subscription);
 
   const programs = [
     // BASKETBALL PROGRAMS (10 programs)
@@ -589,9 +601,23 @@ export default function ProgramsPage() {
         {/* Programs Grid */}
         {filteredPrograms.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredPrograms.map((program) => (
-              <ProgramCard key={program.id} {...program} />
-            ))}
+            {user.subscription === "paid" ? (
+              filteredPrograms.map((program) => (
+                <ProgramCard key={program.id} {...program} />
+              ))
+            ) : (
+                filteredPrograms.slice(0, 20).map((program, index) => (
+                  <ProgramCard
+                    key={program.id}
+                    {...program}
+                    locked={
+                      !user?.subscription || user.subscription !== "paid"
+                        ? index >= 3
+                        : false
+                    }
+                  />
+                ))
+            )}
           </div>
         ) : (
           <div className="bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-700 rounded-xl p-12 text-center">

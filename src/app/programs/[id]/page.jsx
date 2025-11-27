@@ -5,16 +5,61 @@ import Card from "@/components/shared/Card";
 import Button from "@/components/shared/Button";
 import { useState } from "react";
 import Link from "next/link";
-import { getProgramById } from "@/data/programs-data";
+import { getProgramById, getAllPrograms } from "@/data/programs-data"; // ✅ add getAllPrograms
+import { useAuth } from "@/context/AuthContext";
+
 
 export default function ProgramDetailPage({ params }) {
   const [activeWeek, setActiveWeek] = useState(1);
   const [isSaved, setIsSaved] = useState(false);
   const [showAllWeeks, setShowAllWeeks] = useState(false);
-
-  // Get program
+  const { user } = useAuth();
+  const isPaid = user?.subscription === "paid";
+  
+  // == GET PROGRAM ==
   const program = getProgramById(params.id);
 
+  // == GET ALL PROGRAMS SO WE CAN KNOW WHICH INDEX THIS PROGRAM IS ==
+  const allPrograms = getAllPrograms();
+  const programIndex = allPrograms.findIndex((p) => p.id === params.id);
+
+  console.log(getAllPrograms());
+
+
+  // == LOCK FREE USERS (ONLY ACCESS FIRST 6 PROGRAMS) ==
+  const FREE_LIMIT = 6; // change to any number you want
+
+  if (!isPaid && programIndex >= FREE_LIMIT) {
+    return (
+      <LayoutWrapper>
+        <div className="max-w-6xl mx-auto px-4 py-20 text-center">
+          <div className="text-7xl mb-6">🔒</div>
+          <h1 className="text-4xl font-bold text-white mb-4">
+            Premium Program
+          </h1>
+          <p className="text-slate-400 text-lg mb-8 max-w-xl mx-auto">
+            This training program is available only for Premium members. Upgrade
+            to unlock full access to all programs.
+          </p>
+
+          <Link href="/upgrade">
+            <button className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-10 py-4 rounded-xl text-lg font-semibold transition-all hover:scale-105 shadow-lg">
+              Upgrade to Premium →
+            </button>
+          </Link>
+
+          <Link
+            href="/programs"
+            className="block mt-6 text-slate-400 hover:text-white"
+          >
+            ← Back to Programs
+          </Link>
+        </div>
+      </LayoutWrapper>
+    );
+  }
+
+  // == PROGRAM NOT FOUND ==
   if (!program) {
     return (
       <LayoutWrapper>
@@ -37,6 +82,10 @@ export default function ProgramDetailPage({ params }) {
       </LayoutWrapper>
     );
   }
+
+  // ==============================
+  // PAGE CONTENT (UNCHANGED)
+  // ==============================
 
   const levelColors = {
     Beginner: "from-emerald-600 to-emerald-700",
@@ -129,27 +178,7 @@ export default function ProgramDetailPage({ params }) {
               </div>
             </div>
 
-            {/* Action Buttons */}
-            {/* <div className="flex gap-4 flex-wrap">
-              <Button className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 shadow-lg shadow-blue-600/30 hover:scale-105 transition-all text-lg px-8 py-4">
-                🚀 Start Program Now
-              </Button>
-
-              <button
-                onClick={() => setIsSaved(!isSaved)}
-                className={`px-6 py-4 rounded-xl font-semibold transition-all hover:scale-105 ${
-                  isSaved
-                    ? "bg-gradient-to-r from-orange-600 to-orange-700 text-white shadow-lg shadow-orange-600/30"
-                    : "bg-slate-800 text-slate-300 border border-slate-700 hover:bg-slate-700"
-                }`}
-              >
-                {isSaved ? "📌 Saved" : "🔖 Save for Later"}
-              </button>
-
-              <button className="px-6 py-4 rounded-xl font-semibold bg-slate-800 text-slate-300 border border-slate-700 hover:bg-slate-700 transition-all hover:scale-105">
-                📤 Share
-              </button>
-            </div> */}
+            {/* Hidden Action Buttons */}
           </div>
         </div>
 
@@ -166,7 +195,6 @@ export default function ProgramDetailPage({ params }) {
             </Card>
           ))}
         </div>
-
         {/* PROGRAM GOALS */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
           <Card className="p-6 lg:col-span-2 bg-gradient-to-br from-slate-800 to-slate-900 border-slate-700">

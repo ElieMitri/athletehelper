@@ -16,7 +16,12 @@ import {
   updateProfile,
   User,
 } from "firebase/auth";
-import { doc, getDoc, setDoc } from "firebase/firestore";
+import { doc, setDoc, onSnapshot } from "firebase/firestore";
+import {
+  setActiveSession,
+  watchSession,
+  clearSession,
+} from "@/lib/sessionManager";
 
 // ------------------------
 // TYPES
@@ -25,6 +30,10 @@ interface FirestoreProfile {
   name?: string;
   email?: string;
   subscription?: string;
+  subscriptionExpiresAt?: string | null;
+  nextBillingDate?: string | null;
+  activeSessionId?: string | null;
+  lastSessionUpdate?: string;
   uid?: string;
   createdAt?: number;
   [key: string]: any;
@@ -40,7 +49,7 @@ export interface AuthContextType {
 }
 
 // ------------------------
-// CONTEXT (NO RED UNDERLINE)
+// CONTEXT
 // ------------------------
 const AuthContext = createContext<AuthContextType | null>(null);
 
@@ -52,69 +61,157 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsub = onAuthStateChanged(
+    console.log("🚀 AuthProvider initialized");
+
+    let unsubscribeFirestore: (() => void) | null = null;
+    let unsubscribeSession: (() => void) | null = null;
+
+    const unsubscribeAuth = onAuthStateChanged(
       auth,
       async (firebaseUser: User | null) => {
+        console.log(
+          "🔐 Auth state changed:",
+          firebaseUser ? "Logged in" : "Logged out"
+        );
+
+        // Clean up previous listeners
+        if (unsubscribeFirestore) {
+          console.log("🧹 Cleaning up Firestore listener");
+          unsubscribeFirestore();
+          unsubscribeFirestore = null;
+        }
+        if (unsubscribeSession) {
+          console.log("🧹 Cleaning up session listener");
+          unsubscribeSession();
+          unsubscribeSession = null;
+        }
+
         if (!firebaseUser) {
+          console.log("❌ No user logged in");
           setUser(null);
           setLoading(false);
           return;
         }
 
-        const snap = await getDoc(doc(db, "users", firebaseUser.uid));
-        const profile: FirestoreProfile | null = snap.exists()
-          ? snap.data()
-          : null;
+        console.log("👤 User logged in:", firebaseUser.email);
 
+        // Set this device as active session
+        console.log("📱 Setting active session...");
+        await setActiveSession(firebaseUser.uid);
+
+        // Start watching for session changes
+        console.log("👀 Starting session monitoring...");
+        unsubscribeSession = watchSession(firebaseUser.uid);
+
+        // Get initial token
         const token = await firebaseUser.getIdTokenResult();
 
-        const mergedUser = {
-          uid: firebaseUser.uid,
-          email: firebaseUser.email,
-          displayName: firebaseUser.displayName,
-          photoURL: firebaseUser.photoURL,
-          emailVerified: firebaseUser.emailVerified,
-          providerId: firebaseUser.providerId,
-          providers: firebaseUser.providerData,
-          creationTime: firebaseUser.metadata.creationTime,
-          lastLogin: firebaseUser.metadata.lastSignInTime,
-          claims: token.claims,
-          ...profile,
-        };
+        // Listen to user document
+        console.log("📡 Setting up Firestore listener...");
+        unsubscribeFirestore = onSnapshot(
+          doc(db, "users", firebaseUser.uid),
+          async (snap) => {
+            console.log("📄 User document updated");
 
-        setUser(mergedUser);
-        setLoading(false);
+            const profile: FirestoreProfile | null = snap.exists()
+              ? (snap.data() as FirestoreProfile)
+              : null;
+
+            const latestToken = await firebaseUser.getIdTokenResult();
+
+            const mergedUser = {
+              uid: firebaseUser.uid,
+              email: firebaseUser.email,
+              displayName: firebaseUser.displayName,
+              photoURL: firebaseUser.photoURL,
+              emailVerified: firebaseUser.emailVerified,
+              providerId: firebaseUser.providerId,
+              providers: firebaseUser.providerData,
+              creationTime: firebaseUser.metadata.creationTime,
+              lastLogin: firebaseUser.metadata.lastSignInTime,
+              claims: latestToken.claims,
+              ...profile,
+            };
+
+            console.log("✅ User data merged:", mergedUser.email);
+            setUser(mergedUser);
+            setLoading(false);
+          },
+          (error) => {
+            console.error("❌ Firestore listener error:", error);
+            setLoading(false);
+          }
+        );
       }
     );
 
-    return () => unsub();
+    return () => {
+      console.log("🧹 Cleaning up AuthProvider");
+      unsubscribeAuth();
+      if (unsubscribeFirestore) unsubscribeFirestore();
+      if (unsubscribeSession) unsubscribeSession();
+    };
   }, []);
 
+  // ------------------------
   // LOGIN
-  const login = (email: string, password: string) =>
-    signInWithEmailAndPassword(auth, email, password);
+  // ------------------------
+  const login = async (email: string, password: string) => {
+    console.log("🔑 Login attempt:", email);
 
+    const result = await signInWithEmailAndPassword(auth, email, password);
+
+    console.log("✅ Login successful");
+    console.log("📱 Setting active session (will logout other devices)...");
+
+    await setActiveSession(result.user.uid);
+
+    return result;
+  };
+
+  // ------------------------
   // SIGNUP
+  // ------------------------
   const signup = async (email: string, password: string, name?: string) => {
+    console.log("📝 Signup attempt:", email);
+
     const result = await createUserWithEmailAndPassword(auth, email, password);
 
     if (name) {
       await updateProfile(result.user, { displayName: name });
     }
 
+    console.log("💾 Creating user document...");
     await setDoc(doc(db, "users", result.user.uid), {
       name,
       email,
       subscription: "free",
+      subscriptionExpiresAt: null,
+      nextBillingDate: null,
+      activeSessionId: null,
       uid: result.user.uid,
       createdAt: Date.now(),
     });
 
+    console.log("✅ Signup successful");
+    await setActiveSession(result.user.uid);
+
     return result.user;
   };
 
+  // ------------------------
   // LOGOUT
-  const logout = () => signOut(auth);
+  // ------------------------
+  const logout = async () => {
+    console.log("🚪 Logout initiated");
+
+    if (auth.currentUser) {
+      await clearSession(auth.currentUser.uid);
+    }
+
+    await signOut(auth);
+    console.log("✅ Logged out successfully");
+  };
 
   return (
     <AuthContext.Provider
@@ -133,10 +230,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 }
 
 // ------------------------
-// HOOK (NO RED UNDERLINE)
+// HOOK
 // ------------------------
 export const useAuth = () => {
   const ctx = useContext(AuthContext);
-  if (!ctx) throw new Error("useAuth must be used inside <AuthProvider>");
+  if (!ctx) {
+    throw new Error("useAuth must be used inside <AuthProvider>");
+  }
   return ctx;
 };

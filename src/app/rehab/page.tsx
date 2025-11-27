@@ -6,11 +6,21 @@ import Card from "@/components/shared/Card";
 import { useState } from "react";
 import Link from "next/link";
 import { rehabPrograms, getAllBodyParts } from "@/data/rehab-programs";
+import { useAuth } from "@/context/AuthContext";
 
 export default function RehabPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedBodyPart, setSelectedBodyPart] = useState("All");
   const [selectedSeverity, setSelectedSeverity] = useState("All");
+  const { user, loading } = useAuth();
+
+  if (loading) {
+    return (
+      <div className="w-full h-screen flex items-center justify-center bg-[#0a0a0a]">
+        <div className="animate-spin h-12 w-12 border-4 border-blue-600 border-t-transparent rounded-full"></div>
+      </div>
+    );
+  }
 
   // Generate body parts filter from data
   const uniqueBodyParts = getAllBodyParts();
@@ -436,8 +446,12 @@ export default function RehabPage() {
         {/* Programs Grid */}
         {filteredPrograms.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-            {filteredPrograms.map((program) => (
-              <InjuryCard key={program.id} {...program} />
+            {filteredPrograms.map((program, index) => (
+              <InjuryCard
+                key={program.id}
+                {...program}
+                locked={user.subscription !== "paid" && index >= 4} // 🔥 BLUR AFTER FIRST 4
+              />
             ))}
           </div>
         ) : (
