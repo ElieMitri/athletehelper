@@ -601,23 +601,23 @@ export default function ProgramsPage() {
         {/* Programs Grid */}
         {filteredPrograms.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {user.subscription === "paid" ? (
-              filteredPrograms.map((program) => (
-                <ProgramCard key={program.id} {...program} />
-              ))
-            ) : (
-                filteredPrograms.slice(0, 20).map((program, index) => (
-                  <ProgramCard
-                    key={program.id}
-                    {...program}
-                    locked={
-                      !user?.subscription || user.subscription !== "paid"
-                        ? index >= 3
-                        : false
-                    }
-                  />
+            {user.subscription === "paid"
+              ? filteredPrograms.map((program) => (
+                  <ProgramCard key={program.id} {...program} />
                 ))
-            )}
+              : filteredPrograms
+                  .slice(0, 20)
+                  .map((program, index) => (
+                    <ProgramCard
+                      key={program.id}
+                      {...program}
+                      locked={
+                        !user?.subscription || user.subscription !== "paid"
+                          ? index >= 3
+                          : false
+                      }
+                    />
+                  ))}
           </div>
         ) : (
           <div className="bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-700 rounded-xl p-12 text-center">
