@@ -64,7 +64,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     console.log("🚀 AuthProvider initialized");
 
     let unsubscribeFirestore: (() => void) | null = null;
-    let unsubscribeSession: (() => void) | null = null;
 
     const unsubscribeAuth = onAuthStateChanged(
       auth,
@@ -74,16 +73,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           firebaseUser ? "Logged in" : "Logged out"
         );
 
-        // Clean up previous listeners
+        // Clean up previous listener
         if (unsubscribeFirestore) {
           console.log("🧹 Cleaning up Firestore listener");
           unsubscribeFirestore();
           unsubscribeFirestore = null;
-        }
-        if (unsubscribeSession) {
-          console.log("🧹 Cleaning up session listener");
-          unsubscribeSession();
-          unsubscribeSession = null;
         }
 
         if (!firebaseUser) {
@@ -94,14 +88,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
 
         console.log("👤 User logged in:", firebaseUser.email);
-
-        // Set this device as active session
-        console.log("📱 Setting active session...");
-        await setActiveSession(firebaseUser.uid);
-
-        // Start watching for session changes
-        console.log("👀 Starting session monitoring...");
-        unsubscribeSession = watchSession(firebaseUser.uid);
 
         // Get initial token
         const token = await firebaseUser.getIdTokenResult();
@@ -149,7 +135,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       console.log("🧹 Cleaning up AuthProvider");
       unsubscribeAuth();
       if (unsubscribeFirestore) unsubscribeFirestore();
-      if (unsubscribeSession) unsubscribeSession();
     };
   }, []);
 
@@ -162,9 +147,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const result = await signInWithEmailAndPassword(auth, email, password);
 
     console.log("✅ Login successful");
-    console.log("📱 Setting active session (will logout other devices)...");
-
-    await setActiveSession(result.user.uid);
 
     return result;
   };
@@ -188,13 +170,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       subscription: "free",
       subscriptionExpiresAt: null,
       nextBillingDate: null,
-      activeSessionId: null,
       uid: result.user.uid,
       createdAt: Date.now(),
     });
 
     console.log("✅ Signup successful");
-    await setActiveSession(result.user.uid);
 
     return result.user;
   };
@@ -204,10 +184,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // ------------------------
   const logout = async () => {
     console.log("🚪 Logout initiated");
-
-    if (auth.currentUser) {
-      await clearSession(auth.currentUser.uid);
-    }
 
     await signOut(auth);
     console.log("✅ Logged out successfully");
@@ -228,7 +204,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     </AuthContext.Provider>
   );
 }
-
 // ------------------------
 // HOOK
 // ------------------------

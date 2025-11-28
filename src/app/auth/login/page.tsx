@@ -78,7 +78,7 @@ export default function LoginPage() {
         </div>
 
         {/* Session Expired Warning */}
-        {reason === "session_expired" && (
+        {/* {reason === "session_expired" && (
           <div className="mb-6 p-4 bg-orange-600/20 border border-orange-600/50 rounded-xl">
             <div className="flex items-start gap-3">
               <span className="text-2xl">⚠️</span>
@@ -93,18 +93,18 @@ export default function LoginPage() {
               </div>
             </div>
           </div>
-        )}
+        )} */}
 
         <div className="bg-slate-900/50 backdrop-blur-sm border border-slate-800 rounded-2xl shadow-2xl p-8">
           {/* Single Device Info Banner */}
-          <div className="mb-6 p-3 bg-blue-600/10 border border-blue-600/30 rounded-lg">
+          {/* <div className="mb-6 p-3 bg-blue-600/10 border border-blue-600/30 rounded-lg">
             <p className="text-blue-400 text-sm flex items-center gap-2">
               <span>🔒</span>
               <span>
                 Logging in here will log out any other devices for security.
               </span>
             </p>
-          </div>
+          </div> */}
 
           {/* Error Message */}
           {error && (
@@ -227,11 +227,11 @@ export default function LoginPage() {
         </p>
 
         {/* Additional Security Info */}
-        <div className="mt-4 text-center">
+        {/* <div className="mt-4 text-center">
           <p className="text-slate-600 text-xs">
             🔒 For security, only one device can be logged in at a time
           </p>
-        </div>
+        </div> */}
       </div>
     </div>
   );

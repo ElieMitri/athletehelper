@@ -3,13 +3,18 @@
 import { useEffect, useState } from "react";
 import { db } from "@/lib/firebase";
 import { collection, getDocs, doc, updateDoc } from "firebase/firestore";
+import { useAuth } from "@/context/AuthContext";
 
 export default function AdminPage() {
+  const { user, loading: authLoading } = useAuth();
   const [allUsers, setAllUsers] = useState<any[]>([]);
   const [filteredUsers, setFilteredUsers] = useState<any[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
+
+  // CHECK IF USER IS ADMIN
+  const isAdmin = user?.email === "eliegmitri7@gmail.com";
 
   // ------------------------------------
   // LOAD ALL USERS ON FIRST LOAD
@@ -31,13 +36,17 @@ export default function AdminPage() {
   };
 
   useEffect(() => {
-    loadUsers();
-  }, []);
+    if (!authLoading && isAdmin) {
+      loadUsers();
+    }
+  }, [authLoading, isAdmin]);
 
   // ------------------------------------
   // CHECK AND EXPIRE SUBSCRIPTIONS
   // ------------------------------------
   useEffect(() => {
+    if (!isAdmin) return;
+
     const checkExpiredSubscriptions = async () => {
       const now = new Date();
 
@@ -99,7 +108,7 @@ export default function AdminPage() {
     const interval = setInterval(checkExpiredSubscriptions, 60000); // Check every minute
 
     return () => clearInterval(interval);
-  }, [allUsers]);
+  }, [allUsers, isAdmin]);
 
   // ------------------------------------
   // SEARCH FILTERING (client-side)
@@ -202,6 +211,43 @@ export default function AdminPage() {
     }
   };
 
+  // ------------------------------------
+  // ACCESS DENIED SCREEN
+  // ------------------------------------
+  if (authLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-slate-950">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
+          <p className="text-slate-400">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!user || !isAdmin) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-slate-950 px-4">
+        <div className="max-w-md w-full text-center">
+          <div className="text-7xl mb-6">🚫</div>
+          <h1 className="text-4xl font-bold text-white mb-4">Access Denied</h1>
+          <p className="text-slate-400 text-lg mb-8">
+            You don't have permission to access the admin panel.
+          </p>
+          <a
+            href="/dashboard"
+            className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-semibold transition-all"
+          >
+            Back to Dashboard
+          </a>
+        </div>
+      </div>
+    );
+  }
+
+  // ------------------------------------
+  // ADMIN PANEL (ONLY FOR eliegmitri7@gmail.com)
+  // ------------------------------------
   return (
     <div className="max-w-4xl mx-auto py-10 px-6">
       <h1 className="text-3xl font-bold text-white mb-6">Admin Panel</h1>

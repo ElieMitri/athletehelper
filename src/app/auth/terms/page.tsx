@@ -250,15 +250,9 @@ export default function AuthTermsPage() {
               </p>
               <div className="bg-slate-800 border border-slate-700 rounded-lg p-4">
                 <p className="text-slate-300">
-                  <strong className="text-white">Email:</strong>{" "}
-                  legal@athletehelper.com
+                  <strong className="text-white">Phone Number:</strong>{" "}
+                  (+961) 81/107/752
                   <br />
-                  <strong className="text-white">Address:</strong>{" "}
-                  AthleteHelper, Inc.
-                  <br />
-                  123 Training Street, Suite 100
-                  <br />
-                  San Francisco, CA 94105
                 </p>
               </div>
             </section>
