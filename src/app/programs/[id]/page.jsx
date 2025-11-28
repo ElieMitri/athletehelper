@@ -8,14 +8,13 @@ import Link from "next/link";
 import { getProgramById, getAllPrograms } from "@/data/programs-data"; // ✅ add getAllPrograms
 import { useAuth } from "@/context/AuthContext";
 
-
 export default function ProgramDetailPage({ params }) {
   const [activeWeek, setActiveWeek] = useState(1);
   const [isSaved, setIsSaved] = useState(false);
   const [showAllWeeks, setShowAllWeeks] = useState(false);
   const { user } = useAuth();
   const isPaid = user?.subscription === "paid";
-  
+
   // == GET PROGRAM ==
   const program = getProgramById(params.id);
 
@@ -24,7 +23,6 @@ export default function ProgramDetailPage({ params }) {
   const programIndex = allPrograms.findIndex((p) => p.id === params.id);
 
   console.log(getAllPrograms());
-
 
   // == LOCK FREE USERS (ONLY ACCESS FIRST 6 PROGRAMS) ==
   const FREE_LIMIT = 3; // change to any number you want
@@ -259,7 +257,7 @@ export default function ProgramDetailPage({ params }) {
           </p>
 
           <p className="text-slate-300 text-lg leading-relaxed mb-4">
-            You’ll complete {program.sessionsPerWeek} sessions per week over{" "}
+            You'll complete {program.sessionsPerWeek} sessions per week over{" "}
             {program.duration}. Each week progressively increases load and
             intensity.
           </p>
@@ -432,76 +430,33 @@ export default function ProgramDetailPage({ params }) {
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {(program.sport === "Basketball"
-              ? [
-                  {
-                    title: "Basketball Vertical Jump",
-                    level: "Advanced",
-                    weeks: "10",
-                    icon: "🏀",
-                    id: "2",
-                  },
-                  {
-                    title: "Point Guard Speed",
-                    level: "Intermediate",
-                    weeks: "6",
-                    icon: "🏀",
-                    id: "3",
-                  },
-                  {
-                    title: "Big Man Power Training",
-                    level: "Advanced",
-                    weeks: "12",
-                    icon: "🏀",
-                    id: "6",
-                  },
-                ]
-              : [
-                  {
-                    title: "Soccer Speed & Acceleration",
-                    level: "Advanced",
-                    weeks: "10",
-                    icon: "⚽",
-                    id: "12",
-                  },
-                  {
-                    title: "Midfielder Conditioning",
-                    level: "Intermediate",
-                    weeks: "10",
-                    icon: "⚽",
-                    id: "13",
-                  },
-                  {
-                    title: "Striker Power Training",
-                    level: "Advanced",
-                    weeks: "8",
-                    icon: "⚽",
-                    id: "15",
-                  },
-                ]
-            ).map((similar, index) => (
-              <Link key={index} href={`/programs/${similar.id}`}>
-                <div className="p-6 bg-slate-900 rounded-xl border border-slate-700 hover:border-slate-600 hover:bg-slate-800 cursor-pointer transition-all group hover:scale-[1.02]">
-                  <div className="text-4xl mb-3">{similar.icon}</div>
-                  <h3 className="font-bold text-white text-lg mb-2 group-hover:text-blue-400 transition-colors">
-                    {similar.title}
-                  </h3>
+            {allPrograms
+              .filter((p) => p.id !== program.id) // Exclude current program
+              .sort(() => Math.random() - 0.5) // Shuffle the array
+              .slice(0, 3) // Take only 3 programs
+              .map((similar, index) => (
+                <Link key={index} href={`/programs/${similar.id}`}>
+                  <div className="p-6 bg-slate-900 rounded-xl border border-slate-700 hover:border-slate-600 hover:bg-slate-800 cursor-pointer transition-all group hover:scale-[1.02]">
+                    <div className="text-4xl mb-3">{similar.icon}</div>
+                    <h3 className="font-bold text-white text-lg mb-2 group-hover:text-blue-400 transition-colors">
+                      {similar.title}
+                    </h3>
 
-                  <div className="flex items-center gap-2 text-sm text-slate-400 mb-3 flex-wrap">
-                    <span className="px-2 py-1 rounded bg-slate-800 text-slate-300">
-                      {similar.level}
-                    </span>
-                    <span className="px-2 py-1 rounded bg-slate-800 text-slate-300">
-                      {similar.weeks} weeks
-                    </span>
+                    <div className="flex items-center gap-2 text-sm text-slate-400 mb-3 flex-wrap">
+                      <span className="px-2 py-1 rounded bg-slate-800 text-slate-300">
+                        {similar.level}
+                      </span>
+                      <span className="px-2 py-1 rounded bg-slate-800 text-slate-300">
+                        {similar.duration}
+                      </span>
+                    </div>
+
+                    <p className="text-sm text-slate-500">
+                      Click to view full program details
+                    </p>
                   </div>
-
-                  <p className="text-sm text-slate-500">
-                    Click to view full program details
-                  </p>
-                </div>
-              </Link>
-            ))}
+                </Link>
+              ))}
           </div>
         </Card>
       </div>

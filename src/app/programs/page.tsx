@@ -348,7 +348,7 @@ export default function ProgramsPage() {
     },
     {
       label: "Active Athletes",
-      value: `${(totalEnrolled / 1000).toFixed(1)}K+`,
+      value: `${(totalEnrolled / 5000).toFixed(1)}K+`,
       icon: "👥",
       color: "from-purple-600 to-purple-700",
     },
